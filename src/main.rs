@@ -1,17 +1,19 @@
 use std::{
     io::stdin,
-    time::{SystemTime, UNIX_EPOCH},
+    time::{SystemTime, SystemTimeError, UNIX_EPOCH},
 };
 
-fn seconds_since_epoch() -> u64 {
+fn seconds_since_epoch() -> Result<u64, SystemTimeError> {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_secs()
+        .map(|duration| duration.as_secs())
 }
 
 fn rand() -> u32 {
-    (seconds_since_epoch() as u32 % 8) + 1
+    match seconds_since_epoch() {
+        Ok(seconds) => (seconds as u32 % 8) + 1,
+        Err(_) => 1,
+    }
 }
 
 fn main() {
