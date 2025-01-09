@@ -56,7 +56,7 @@ impl Game {
             Some(State::Quit) => println!("Quit!"),
             Some(State::Win) => println!("Win!"),
             Some(State::Loose) => println!("Loose!"),
-            _ => {}
+            _ => println!("Whoops!"),
         }
     }
 }
