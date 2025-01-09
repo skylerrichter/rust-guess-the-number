@@ -1,4 +1,5 @@
 use std::{
+    fmt::Error,
     io::stdin,
     time::{SystemTime, SystemTimeError, UNIX_EPOCH},
 };
@@ -16,33 +17,59 @@ fn rand() -> u32 {
     }
 }
 
-fn main() {
-    let number = rand().to_string();
+#[derive(PartialEq)]
+enum State {
+    Quit,
+    Win,
+    Loose,
+}
 
-    println!("Guess the number between 1 and 9 (or type `quit` to exit):");
+struct Game {
+    state: Option<State>,
+    number: u32,
+}
 
-    loop {
+impl Game {
+    fn new() -> Self {
+        Self {
+            state: None,
+            number: rand(),
+        }
+    }
+
+    fn update(&mut self) {
         let mut input = String::new();
 
         if let Err(_) = stdin().read_line(&mut input) {
             println!("Failed to read input. Please try again.");
-            continue;
         };
 
-        let guess = input.trim();
-
-        match guess {
-            "quit" => {
-                println!("Goodbye!");
-                return;
-            }
-            _ if guess == number => {
-                println!("You guessed it right! The number was: {}", number);
-                return;
-            }
-            _ => {
-                println!("Incorrect guess. Try again!");
-            }
+        match input.trim() {
+            "quit" => self.state = Some(State::Quit),
+            text if text == self.number.to_string() => self.state = Some(State::Win),
+            _ => self.state = Some(State::Loose),
         }
     }
+
+    fn draw(&mut self) {
+        match self.state {
+            Some(State::Quit) => println!("Quit!"),
+            Some(State::Win) => println!("Win!"),
+            Some(State::Loose) => println!("Loose!"),
+            _ => {}
+        }
+    }
+}
+
+fn main() -> Result<(), Error> {
+    let mut game = Game::new();
+
+    println!("Play!");
+
+    while game.state != Some(State::Quit) {
+        game.update();
+        game.draw();
+    }
+
+    Ok({})
 }
