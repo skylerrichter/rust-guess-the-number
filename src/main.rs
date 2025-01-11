@@ -1,16 +1,14 @@
 use std::fmt::Error;
 
-use guess_the_number::{Game, State};
+use guess_the_number::Game;
 
 fn main() -> Result<(), Error> {
     let mut game = Game::new();
 
-    println!("Play!");
-
-    while game.state != Some(State::Quit) {
+    while game.running() {
         game.update();
         game.draw();
     }
 
-    Ok({})
+    Ok(())
 }

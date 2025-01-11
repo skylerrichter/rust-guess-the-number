@@ -24,7 +24,7 @@ pub enum State {
 }
 
 pub struct Game {
-    pub state: Option<State>,
+    state: Option<State>,
     number: u32,
 }
 
@@ -34,6 +34,10 @@ impl Game {
             state: None,
             number: rand(),
         }
+    }
+
+    pub fn running(&mut self) -> bool {
+        self.state != Some(State::Quit)
     }
 
     pub fn update(&mut self) {
